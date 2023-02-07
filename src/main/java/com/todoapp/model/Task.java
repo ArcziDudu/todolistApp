@@ -1,0 +1,36 @@
+package com.todoapp.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+
+    @Entity
+    @Table(name = "tasks")
+    @Data
+    public class Task {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int id;
+        private String description;
+        private boolean done;
+        private LocalDateTime deadline;
+        @Transient
+        private LocalDateTime createdOn;
+        private LocalDateTime updatedOn;
+
+        public void updateFrom(Task source) {
+            this.description = source.description;
+            done = source.done;
+        }
+        @PrePersist
+        void prePersist(){
+            createdOn  = LocalDateTime.now();
+        }
+
+        @PreUpdate
+        void preMerge(){
+            updatedOn = LocalDateTime.now();
+        }
+    }
